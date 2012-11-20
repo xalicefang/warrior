@@ -1,6 +1,3 @@
-<?php
-
-?>
 <html>
 <head>
     <title>PSet Warriors</title>
@@ -13,7 +10,6 @@
     <link rel="stylesheet" href="jquery.mobile-1.2.0.css" />
     <link rel="stylesheet" href="style.css" />
     <link rel="apple-touch-icon" href="appicon.png" />
-    <link rel="apple-touch-startup-image" href="startup.png">
 
     <script src="jquery-1.8.2.min.js"></script>
     <script src="jquery.mobile-1.2.0.js"></script>
@@ -24,19 +20,43 @@
     body.not_connected #login { display: block; }
     body.not_connected #logout { display: none; }
     body.not_connected #enter { display: none; }
+
+.ui-mobile [data-role=content], .ui-mobile [data-role=dialog], .ui-page {
+background-image: url(images/pencilfirstpage.png), url(images/firstbackground.png);
+background-size:100%, 100% 100%;
+background-repeat: no-repeat;
+background-position: bottom right;
+}
+
+.index-button {
+width:60%;
+margin: 15;
+}
+
     </style>
+
+<img src="images/namefirstpage.png" width="100%" style="margin-bottom:50px">
+
 </head>
 <body>
     <div id="fb-root"></div>
-    <div id="login">
-        <p><button onClick="loginUser();">Login</button></p>
-    </div>
-    <div id="logout">
+	<p></p>
+    <div class="index-button">
+        <p><a href="" data-role="button" data-theme="e" onClick="loginUser();">Login</a></p>
+
+	<p><a href="about.php" data-role="button" data-theme="e">About</a></p>
+
+</div>
+    <!-- 
+	<div id="logout">
         <p><button  onClick="FB.logout(); $.post('updateUserInfo.php', {user_id: '', user_name: ''}, function(data){window.location.reload()});">Logout</button></p>
     </div>
     <div id="enter">
 	<p><button onClick="window.location.href='home.php';">Enter PSet Warriors</button></p>
-    </div>
+    </div> 
+	-->
+
+
     <div id="user-info"></div>
     <script>
     function loginUser() {    
