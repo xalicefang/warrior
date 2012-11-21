@@ -38,15 +38,14 @@
 			<?php
 			include("config.php");
 
-			$user_id = $_REQUEST['user_id'];
-			$userRow = mysql_fetch_assoc(mysql_query("SELECT * FROM allusers WHERE fid = '".$user_id."'"));
-			$uid = $userRow["uid"];
+			$fid = $_REQUEST['user_id']; // change to $_COOKIE['user_id']
+			$userRow = mysql_fetch_assoc(mysql_query("SELECT * FROM allusers WHERE fid = '".$fid."'"));
 
 			$userClasses = array ();
-			$query = mysql_query("SELECT * FROM userClasses WHERE uid = '".$uid."'");
+			$query = mysql_query("SELECT * FROM userClasses WHERE fid = '".$fid."'");
 			while ($userClassesRow = mysql_fetch_assoc($query)) {
 				$userClasses[] = $userClassesRow["cid"];
-			}		
+			}
 
 			$classesTable = mysql_query("SELECT * FROM classes");
 			$classes = array ();

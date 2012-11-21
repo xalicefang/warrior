@@ -3,13 +3,8 @@ include("config.php");
 
 $user_id = $_REQUEST['user_id'];
 $pset = $_REQUEST['pset'];
+$cid = $_REQUEST['cid'];
 $class = urldecode($_REQUEST['className']);
-
-
-$classInfo = mysql_query("SELECT * FROM classes WHERE class='$class'");
-while ($classRow = mysql_fetch_assoc($classInfo)) {
-    $cid = $classRow['cid'];
-}
 
 $insertPset="INSERT INTO `c_cs147_fangx`.`psets`(`class`,`cid`,`pset`,`pid`) VALUES ('$class', '$cid', '$pset', 'NULL')";
 mysql_query($insertPset);

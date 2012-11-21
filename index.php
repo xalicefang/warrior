@@ -1,7 +1,8 @@
 <?php
- if(!isset($_COOKIE['user_id'])) {
-   header( 'Location: http://stanford.edu/~fangx/cgi-bin/pset/login' ) ;
-}
+	// if not logged in, redirect to login
+	if(!isset($_COOKIE['user_id'])) {
+		header( 'Location: http://stanford.edu/~fangx/cgi-bin/pset/login' ) ;
+	}
 ?>
 
 <!DOCTYPE html> 
@@ -83,33 +84,31 @@
 		});
 	});
         </script>
-
+	
 		<?php
-                    if(isset($_COOKIE['user_id'])) {
-                        $fid = $_COOKIE['user_id'];
-                        $userInfo = mysql_query("SELECT * FROM allusers WHERE fid='$fid'");
-                        while($userRow = mysql_fetch_assoc($userInfo)){
-                            $uid = $userRow['uid'];
-                        }
-                        
-                        $classesInfo = mysql_query("SELECT * FROM userClasses WHERE uid='$uid'");
-                        echo '<div data-role="controlgroup">';
-                        echo '<a href="index.html" data-role="button" class="ui-nolink" data-theme="e"><b>Undefeated Psets</b></a>';
-                        while ($classesRow = mysql_fetch_assoc($classesInfo)) {
-                                $cid = $classesRow['cid'];
-                                $psetTable = mysql_query("SELECT * FROM psets WHERE cid='$cid'");
-                                $num_rows = mysql_num_rows($psetTable);
-                                if($num_rows != 0) {
-                                    $psetRow = mysql_fetch_assoc($psetTable);
-                                    $pid = $psetRow['pid'];
-                                    $userPsetTable = mysql_query("SELECT * FROM userpsets WHERE fid='$fid' AND pid='$pid'");
-                                    $userPsetRow = mysql_fetch_assoc($userPsetTable);
-                                    $workingOn = $userPsetRow['workingOn'];
-                                    if($workingOn == 1)
-                                        echo '<div class="draggable" id="'.$psetRow["pid"].'"><a data-ajax="false" href="question.php?pid='.$psetRow['pid'].'&qnum=1" data-role="button">'.$psetRow["class"]." ".$psetRow["pset"]."</a></div>";
-                                }
-                       } 
-                    } // end if
+		if(isset($_COOKIE['user_id'])) {
+			$fid = $_COOKIE['user_id'];
+			$userInfo = mysql_query("SELECT * FROM allusers WHERE fid='$fid'");
+			$classesInfo = mysql_query("SELECT * FROM userClasses WHERE fid='$fid'");
+			echo '<div data-role="controlgroup">';
+			echo '<a href="index.html" data-role="button" class="ui-nolink" data-theme="e"><b>Undefeated Psets</b></a>';
+			while ($classesRow = mysql_fetch_assoc($classesInfo)) {
+				$cid = $classesRow['cid'];
+				$psetTable = mysql_query("SELECT * FROM psets WHERE cid='$cid'");
+				$num_rows = mysql_num_rows($psetTable);
+				if($num_rows != 0) {
+					while ($psetRow = mysql_fetch_assoc($psetTable)) {
+						$pid = $psetRow['pid'];
+						$userPsetTable = mysql_query("SELECT * FROM userpsets WHERE fid='$fid' AND pid='$pid'");
+						$userPsetRow = mysql_fetch_assoc($userPsetTable);
+						$workingOn = $userPsetRow['workingOn'];
+						if($workingOn == 1) {
+							echo '<div class="draggable" id="'.$psetRow["pid"].'"><a data-ajax="false" href="question.php?pid='.$psetRow['pid'].'&qnum=1" data-role="button">'.$psetRow["class"]." ".$psetRow["pset"]."</a></div>";
+						}
+					}
+				} // end if; else get started help. light up add classes + show help with jquery
+			} 
+		} // end if isset
 		?>
  <p></p>
 

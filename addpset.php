@@ -23,19 +23,17 @@
 <body>
     
 	<div data-role="page" data-theme="c" id="home">
-	<div data-role="header" ><img src="images/header.png" width="100%">
-	</div>
+	<div data-role="header" ><img src="images/header.png" width="100%"></div>
 	<div data-role="content">
 	<a href="index.html" data-role="button" class="ui-nolink" data-theme="e">Choose a class</a>
 			<?php
 			include("config.php");
 			
-			$user_id = $_REQUEST['user_id'];
-			$userRow = mysql_fetch_assoc(mysql_query("SELECT * FROM allusers WHERE fid = '".$user_id."'"));
-			$uid = $userRow["uid"];
+			$fid = $_REQUEST['user_id'];
+			$userRow = mysql_fetch_assoc(mysql_query("SELECT * FROM allusers WHERE fid = '".$fid."'"));
 
 			$userClasses = array ();
-			$query = mysql_query("SELECT * FROM userClasses WHERE uid = '".$uid."'");
+			$query = mysql_query("SELECT * FROM userClasses WHERE fid = '".$fid."'");
 			while ($userClassesRow = mysql_fetch_assoc($query)) {
 				$userClasses[] = $userClassesRow["cid"];
 			}		
@@ -47,13 +45,12 @@
 			echo '<fieldset data-role="controlgroup">';
 			while ($classesRow = mysql_fetch_assoc($classesTable)) {
 				$class = $classesRow['class'];
+				$cid = $classesRow['cid'];
 				$classes[] = $class;
-				$counter=0;
 				for ($i=0; $i<count($userClasses); $i++) {
-					$counter++;
-					if ($userClasses[$i]==$classesRow["cid"]) {
-						echo '<input type="radio" name="class" id="class-'.$counter.'" value="'.$counter.'"/>';
-						echo '<label for="class-'.$counter.'">'.$class.'</label>';
+					if ($userClasses[$i]==$cid) {
+						echo '<input type="radio" name="class" id="'.$cid.'"/>';
+						echo '<label for="'.$cid.'">'.$class.'</label>';
 						break;
 					}
 				}
@@ -92,11 +89,12 @@
 
         function updatePset(){
             var userID = <?php echo $_COOKIE['user_id']?>;
-            var className = escape($('.ui-radio-on .ui-btn-text').html());
+            var className = $('.ui-radio-on .ui-btn-text').text();
+            var cid = $('input[name=class]:checked').attr('id');
             var psetName = $('#pset').val();
             if(className != 'undefined' && className != '' && psetName != '') {
                 	    confirm("Add " + $('.ui-radio-on .ui-btn-text').html() + " " + psetName + "?");
-                            $.post('updatePset.php', {user_id: userID, className: className, pset: psetName}, function(data){window.location.href="home.php"});
+                            $.post('updatePset.php', {user_id: userID, className: className, cid: cid, pset: psetName}, function(data){window.location.href="index.php"});
             }
             else confirm('Please choose a valid class and pset name!');                 
         }
