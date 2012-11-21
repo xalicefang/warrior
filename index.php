@@ -1,106 +1,169 @@
+<?php
+ if(!isset($_COOKIE['user_id'])) {
+   header( 'Location: http://stanford.edu/~fangx/cgi-bin/pset/login' ) ;
+}
+?>
+
+<!DOCTYPE html> 
 <html>
+
 <head>
-    <title>PSet Warriors</title>
-    <meta name="viewport" content="initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
-    <meta charset="utf-8">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<title>Pset Warrior | Undefeated Psets</title> 
+	<meta charset="utf-8">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+ 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
 
-    <link rel="stylesheet" href="jquery.mobile-1.2.0.css" />
-    <link rel="stylesheet" href="style.css" />
-    <link rel="apple-touch-icon" href="appicon.png" />
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+	<link rel="stylesheet" href="style.css" />
+	<link rel="apple-touch-icon" href="appicon.png" />
+	<link rel="apple-touch-startup-image" href="startup.png">
+	<link href='http://fonts.googleapis.com/css?family=Patrick+Hand' rel='stylesheet' type='text/css'>
+   	<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css" />
 
-    <script src="jquery-1.8.2.min.js"></script>
-    <script src="jquery.mobile-1.2.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.8.21/jquery-ui.min.js"></script>
+    <script src="jquery.ui.touch-punch.min.js"></script>
+	<script src="jquery.mobile-1.2.0.js"></script>
+
+	<?php include("config.php")?>
+
     <style>
-    body.connected #login { display: none; }
-    body.connected #logout { display: block; }
-    body.connected #enter { display: block; }
-    body.not_connected #login { display: block; }
-    body.not_connected #logout { display: none; }
-    body.not_connected #enter { display: none; }
+      @media screen and (orientation: landscape) {
+        html, body {
+          width: 100%;
+        }
 
-.ui-mobile [data-role=content], .ui-mobile [data-role=dialog], .ui-page {
-background-image: url(images/pencilfirstpage.png), url(images/firstbackground.png);
-background-size:100%, 100% 100%;
-background-repeat: no-repeat;
-background-position: bottom right;
-}
+        .content h1.landscape { display: block }
+        .content h1.portrait { display: none }
+      }
+      @media screen and (orientation: portrait) {
+        html, body {
+          width: 100%;
+        }
 
-.index-button {
-width:60%;
-margin: 15;
-}
+        .content .landscape { display: none }
+        .content .portrait { display: block }
+      }
+      
+              #droppable { width: 95%; height: 50px; padding: 0.5em; float: center; margin: 0px; }
 
     </style>
 
-<img src="images/namefirstpage.png" width="100%" style="margin-bottom:50px">
+</head> 
 
-</head>
-<body>
-    <div id="fb-root"></div>
-	<p></p>
-    <div class="index-button">
-        <p><a href="" data-role="button" data-theme="e" onClick="loginUser();">Login</a></p>
 
-	<p><a href="about.php" data-role="button" data-theme="e">About</a></p>
 
+  <body> 
+  
+	<div data-role="page" data-theme="c">
+	<div data-role="header" >
+		<img src="images/header.png" width="100%">
+	</div><!-- /header -->
+
+      <div class='content' data-role='content'> 
+
+       <script>
+	
+	$(function() {
+		$( ".draggable" ).draggable({ revert: "invalid" });
+		$( "#droppable" ).droppable({
+		activeClass: "ui-state-hover",
+		hoverClass: "ui-state-active",
+		drop: function( event, ui ) {
+		var pid = ui.draggable.attr('id');
+                deletePset(pid);
+		//document.write(pid);
+		document.location.reload(true);
+		
+		$( this )
+			.addClass( "ui-state-highlight" )
+			.find( "p" )
+		}
+		});
+	});
+        </script>
+
+		<?php
+                    if(isset($_COOKIE['user_id'])) {
+                        $fid = $_COOKIE['user_id'];
+                        $userInfo = mysql_query("SELECT * FROM allusers WHERE fid='$fid'");
+                        while($userRow = mysql_fetch_assoc($userInfo)){
+                            $uid = $userRow['uid'];
+                        }
+                        
+                        $classesInfo = mysql_query("SELECT * FROM userClasses WHERE uid='$uid'");
+                        echo '<div data-role="controlgroup">';
+                        echo '<a href="index.html" data-role="button" class="ui-nolink" data-theme="e"><b>Undefeated Psets</b></a>';
+                        while ($classesRow = mysql_fetch_assoc($classesInfo)) {
+                                $cid = $classesRow['cid'];
+                                $psetTable = mysql_query("SELECT * FROM psets WHERE cid='$cid'");
+                                $num_rows = mysql_num_rows($psetTable);
+                                if($num_rows != 0) {
+                                    $psetRow = mysql_fetch_assoc($psetTable);
+                                    $pid = $psetRow['pid'];
+                                    $userPsetTable = mysql_query("SELECT * FROM userpsets WHERE fid='$fid' AND pid='$pid'");
+                                    $userPsetRow = mysql_fetch_assoc($userPsetTable);
+                                    $workingOn = $userPsetRow['workingOn'];
+                                    if($workingOn == 1)
+                                        echo '<div class="draggable" id="'.$psetRow["pid"].'"><a data-ajax="false" href="question.php?pid='.$psetRow['pid'].'&qnum=1" data-role="button">'.$psetRow["class"]." ".$psetRow["pset"]."</a></div>";
+                                }
+                       } 
+                    } // end if
+		?>
+ <p></p>
+
+  <div id="droppable" class="ui-widget-header">
+        <p style="font-family:Patrick Hand; text-align:center">drag finished pset here to defeat</p>
+ </div>
 </div>
-    <!-- 
-	<div id="logout">
-        <p><button  onClick="FB.logout(); $.post('updateUserInfo.php', {user_id: '', user_name: ''}, function(data){window.location.reload()});">Logout</button></p>
-    </div>
-    <div id="enter">
-	<p><button onClick="window.location.href='home.php';">Enter PSet Warriors</button></p>
+
+ <div data-role="footer" data-theme="a" data-id="samebar" class="nav-pset" data-position="fixed" data-tap-toggle="false">
+        <div data-role="navbar" class="nav-pset" data-grid="c">
+                <ul>
+			<li><a data-ajax ="false" href="index.php" id="homepage" class="ui-btn-active ui-state-persist" data-icon="custom">Home</a></li>
+                        <li><a data-ajax ="false" href="addpset.php?reload=yes" id="addpset" data-icon="custom">Add pset</a></li>
+                        <li><a data-ajax ="false" href="defeated.php" id="defeated" data-icon="custom">Defeated psets</a></li>
+                        <li><a data-ajax ="false" href="class.php" id="classes" data-icon="custom">Classes</a></li>
+                </ul>
+
+		</div><!-- /navbar -->
+	</div><!-- /footer -->
+
     </div> 
-	-->
-
-
-    <div id="user-info"></div>
     <script>
-    function loginUser() {    
-        FB.login(function(response) { }, {scope:'email'});    
-    }
+      function deletePset(pid){
+            $.post("deletePset.php",
+            {pid: pid, uid: <?php echo $_COOKIE['user_id'] ?>
+            }, function(data)
+            {
+                alert(data);
+            });
+      }
+        
+      (function() {
+        var fixgeometry = function() {
+          /* Some orientation changes leave the scroll position at something
+           * that isn't 0,0. This is annoying for user experience. */
+          scroll(0, 0);
 
-    window.fbAsyncInit = function() {
+          /* Calculate the geometry that our content area should take */
+          var header = $(".header:visible");
+          var footer = $(".footer:visible");
+          var content = $(".content:visible");
+          var viewport_height = $(window).height();
+          
+          var content_height = viewport_height - header.outerHeight() - footer.outerHeight();
+          
+          /* Trim margin/border/padding height */
+          content_height -= (content.outerHeight() - content.height());
+          content.height(content_height);
+        }; /* fixgeometry */
 
-        FB.init({
-        appId      : '378954368857140', // App ID
-        channelUrl : '//WWW.YOUR_DOMAIN.COM/channel.html', // Channel File
-        status     : true, // check login status
-        cookie     : true, // enable cookies to allow the server to access the session
-        xfbml      : true  // parse XFBML
+        $(document).ready(function() {
+          $(window).bind("orientationchange resize pageshow", fixgeometry);
         });
-
-        FB.Event.subscribe('auth.statusChange', handleStatusChange);
-    };
-
-    function handleStatusChange(response) {
-        document.body.className = response.authResponse ? 'connected' : 'not_connected';
-
-        if (response.authResponse) {
-            console.log(response);
-            updateUserInfo(response);
-        }
-    };
-
-    // Load the SDK Asynchronously
-    (function(d){
-        var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
-        if (d.getElementById(id)) {return;}
-        js = d.createElement('script'); js.id = id; js.async = true;
-        js.src = "//connect.facebook.net/en_US/all.js";
-        ref.parentNode.insertBefore(js, ref);
-    }(document));
-
-    function updateUserInfo(response) {
-        FB.api('/me', function(response) {   
-            $.post('updateUserInfo.php', {user_id: response.id, user_name: response.name}, function(data){window.location.href="home.php"});
-            
-            //document.getElementById('user-info').innerHTML = '<img src="https://graph.facebook.com/' + response.id + '/picture">' + response.name;
-        });
-    }
-    </script>
-</body>
-</html>
+      })();
+    </script> 
+  </body> 
+</html> 
