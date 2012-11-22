@@ -59,8 +59,7 @@
                                             $pset = $row['pset'];
                                         }
                                         
-					$counter++;
-					echo '<label id="'.$pid.'"><input type="checkbox" name="checkbox-'.$counter.'" />'.$class.$pset.' '.$psetsRow["pset"].'</label>'; 
+					echo '<label><input type="checkbox" name="defeated" id="'.$pid.'"/>'.$class.$pset.' '.$psetsRow["pset"].'</label>'; 
 				} 
 			echo '</fieldset>';
 			echo '</div>';
@@ -68,6 +67,7 @@
 			?>
 	<p></p>
 	<fieldset class="ui-grid-e">
+	<!--<div class="ui-block-a"><a data-ajax="false" data-role="button" data-theme="c" data-ajax="true" href="" onclick="countChecked()">Test</a></div>-->
 	<div class="ui-block-b"><a data-ajax="false" data-role="button" data-theme="c" data-ajax="true" href="" onclick="revivePset()">Revive</a></div>	   
 	</fieldset>
 	</div><!-- /content -->
@@ -87,15 +87,34 @@
 
        </div><!-- /page -->
        <script>
-           function revivePset(){
-                var pid = $('.ui-checkbox-on').attr('id');
-                $.post("revivePset.php",
-                {pid: pid, uid: <?php echo $_COOKIE['user_id'] ?>
-                }, function(data)
-                {
-                    window.location.reload();
-                });
-           }
+
+function countChecked() {
+
+var allPids = [];
+     $('input:checked').each(function() {
+       allPids.push($(this).attr('id'));
+     });
+	document.write(allPids.length);
+
+$.each(allPids, function(index, value) { 
+  alert(index + ': ' + value); 
+});
+}
+
+	function revivePset(){
+                // var pid = $('.ui-checkbox-on').val();
+		var userID = <?php echo $_COOKIE['user_id']?>;
+		var allPids = [];
+		$('input:checked').each(function() {
+		allPids.push($(this).attr('id'));
+		});
+		$.post('revivePset.php',
+		{allPids:allPids, user_id:userID}, 
+		function(data){
+		window.location.reload();
+		});
+	}
+
        </script>
 </body>
 

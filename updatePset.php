@@ -1,6 +1,8 @@
 <?php
 include("config.php");
 
+echo "lalala";
+
 $user_id = $_REQUEST['user_id'];
 $pset = $_REQUEST['pset'];
 $cid = $_REQUEST['cid'];
