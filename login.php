@@ -35,7 +35,7 @@ margin: 15;
 
     </style>
 
-<img src="images/namefirstpage.png" width="100%" style="margin-bottom:50px">
+<img src="images/namefirstpage.png" width="100%" style="margin-bottom:10%">
 
 </head>
 <body>
