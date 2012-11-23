@@ -1,3 +1,10 @@
+<?php
+	// if logged in, redirect to home
+	if(isset($_COOKIE['user_id'])) {
+		header( 'Location: index' ) ;
+	}
+?>
+
 <html>
 <head>
     <title>PSet Warriors</title>

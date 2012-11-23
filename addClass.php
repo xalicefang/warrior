@@ -10,7 +10,7 @@ $class=($_GET['class']);
 $classRow = mysql_fetch_assoc(mysql_query("SELECT * FROM classes WHERE class = '".$class."'"));
 $cid = $classRow["cid"];
 
-$insertUserPset="INSERT INTO userClasses (`uid`,`cid`) VALUES ($uid,$cid)";
+$insertUserPset="INSERT INTO userClasses (`fid`,`cid`) VALUES ($user_id,$cid)";
 mysql_query($insertUserPset);
 
 echo mysql_error();

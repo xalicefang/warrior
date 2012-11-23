@@ -1,9 +1,10 @@
 <?php
-    include('config.php');
-    $pid = $_REQUEST['pid'];
-    $uid = $_REQUEST['uid'];
+	include('config.php');
+	$allPids = $_REQUEST['allPids'];
+	$fid = $_REQUEST['fid'];
     
-    $updatePset = "UPDATE  `c_cs147_fangx`.`userpsets` SET  `workingOn` =  '0' WHERE  `userpsets`.`pid` =$pid AND `userpsets`.`fid` =$uid";
-    mysql_query($updatePset);
-    echo $pid.$uid;
+	foreach ($allPids as &$pid) {
+		$updatePset = "UPDATE  `c_cs147_fangx`.`userpsets` SET  `workingOn` =  '0' WHERE  `userpsets`.`pid` =$pid AND `userpsets`.`fid` =$fid";
+		mysql_query($updatePset);
+	}
 ?>

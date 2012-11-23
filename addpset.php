@@ -87,14 +87,18 @@
 <script>
 	// $("#add_pset").bind("click", function() { alert("test"); updatePset() });
 
-        function updatePset(){
+	function updatePset(){
             var userID = <?php echo $_COOKIE['user_id']?>;
             var className = $('.ui-radio-on .ui-btn-text').text();
             var cid = $('input[name=class]:checked').attr('id');
             var psetName = $('#pset').val();
             if(className != 'undefined' && className != '' && psetName != '') {
-                	    confirm("Add " + $('.ui-radio-on .ui-btn-text').html() + " " + psetName + "?");
-                            $.post('updatePset.php', {user_id: userID, className: className, cid: cid, pset: psetName}, function(data){window.location.href="index.php"});
+			var r = confirm("Add " + $('.ui-radio-on .ui-btn-text').html() + " " + psetName + "?");
+			if (r==true) {
+				$.post('updatePset.php', 
+				{user_id: userID, className: className, cid: cid, pset: psetName}, 
+				function(data){window.location.href="index.php"});
+			}
             }
             else confirm('Please choose a valid class and pset name!');                 
         }
