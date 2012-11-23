@@ -29,33 +29,15 @@
 
 	<?php include("config.php")?>
 
-    <style>	
-
-@media screen and (orientation: landscape) {
-        html, body {
-          width: 100%;
-        }
-
-        .content h1.landscape { display: block }
-        .content h1.portrait { display: none }
-      }
-      @media screen and (orientation: portrait) {
-        html, body {
-          width: 100%;
-        }
-
-        .content .landscape { display: none }
-        .content .portrait { display: block }
-      }
-
+	<style>	
 	.fixed-above-footer {
-font-family:Patrick Hand; 
-text-align:center; 
-bottom: 90px;
-float: center; 
-}
+		font-family:Patrick Hand; 
+		text-align:center; 
+		bottom: 90px;
+		float: center; 
+	}
 
-#popupPanel-popup {
+	#popupPanel-popup {
 	    right: 0 !important;
 	    left: auto !important;
 		}
@@ -73,7 +55,7 @@ float: center;
 		}
 		#popupPanel .ui-btn {
 		    margin: 2em 15px;
-		}
+	}
 
     </style>
 
@@ -90,26 +72,6 @@ float: center;
 
       <div class='content' data-role='content'> 
 
-       <script>
-	
-	$(function() {
-		$( ".draggable" ).draggable({ revert: "invalid" });
-		$( "#droppable" ).droppable({
-		activeClass: "ui-state-hover",
-		hoverClass: "ui-state-active",
-		drop: function( event, ui ) {
-		var pid = ui.draggable.attr('id');
-                deletePset(pid);
-		//document.write(pid);
-		document.location.reload(true);
-		
-		$( this )
-			.addClass( "ui-state-highlight" )
-			.find( "p" )
-		}
-		});
-	});
-        </script>
 	<div data-role="controlgroup">
 	<a href="" data-role="button" class="ui-nolink" data-theme="e"><b>Undefeated Psets</b></a>
 		<?php
@@ -133,7 +95,10 @@ float: center;
 					$workingOn = $userPsetRow['workingOn'];
 					if($workingOn == 1) {
 						$counter++;
-						echo '<div class="draggable" id="'.$psetRow["pid"].'"><a data-ajax="false" href="question.php?pid='.$psetRow['pid'].'&qnum=1" data-role="button">'.$psetRow["class"]." ".$psetRow["pset"]."</a></div>";
+						echo '<fieldset class="ui-grid-f">';
+						echo '<div class="ui-block-a"><label><input type="checkbox" data-theme="d" id="'.$pid.'" class="custom" />&nbsp;</label></div>';
+						echo '<div class="ui-block-b"><input type="button" data-theme="d" onclick="window.location.href=\'question.php?pid='.$pid.'&qnum=1\'" value="'.$psetRow["class"].' '.$psetRow["pset"].'"></div>';
+						echo '</fieldset>';
 					}
 				}
 			}
@@ -143,7 +108,7 @@ float: center;
 		} // end if isset
 		?>
  <p></p>
-        <a href="" data-role="button" data-theme="b" data-position="fixed" data-role="navbar" id="droppable" class="fixed-above-footer">drag finished pset here to defeat</a>
+<a href="" data-role="button" data-theme="b" data-position="fixed" data-role="navbar" id="droppable" class="fixed-above-footer" onClick="deletePset()">select finished pset & click to defeat</a></form>
 
 </div>
 
@@ -197,39 +162,20 @@ function getStartedHelp() {
 ?>
 
     <script>
-      function deletePset(pid){
-            $.post("deletePset.php",
-            {pid: pid, uid: <?php echo $_COOKIE['user_id'] ?>
-            }, function(data)
-            {
-                alert(data);
-            });
+
+	function deletePset(){
+		var fid = <?php echo $_COOKIE['user_id']?>;
+		var allPids = [];
+		$('input:checked').each(function() {
+		allPids.push($(this).attr('id'));
+		});
+		$.post('deletePset.php',
+		{allPids:allPids, fid:fid}, 
+		function(data){
+		window.location.reload();
+		});
       }
         
-
-      (function() {
-        var fixgeometry = function() {
-          /* Some orientation changes leave the scroll position at something
-           * that isn't 0,0. This is annoying for user experience. */
-          scroll(0, 0);
-
-          /* Calculate the geometry that our content area should take */
-          var header = $(".header:visible");
-          var footer = $(".footer:visible");
-          var content = $(".content:visible");
-          var viewport_height = $(window).height();
-          
-          var content_height = viewport_height - header.outerHeight() - footer.outerHeight();
-          
-          /* Trim margin/border/padding height */
-          content_height -= (content.outerHeight() - content.height());
-          content.height(content_height);
-        }; /* fixgeometry */
-
-        $(document).ready(function() {
-          $(window).bind("orientationchange resize pageshow", fixgeometry);
-        });
-      })();
       </script> 
   </body> 
 </html> 
