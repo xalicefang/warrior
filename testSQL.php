@@ -18,7 +18,6 @@ while ($classesRow = mysql_fetch_assoc($classesInfo)) {
 //        $psetRow = mysql_fetch_assoc($psetTable);
 //        echo '<div class="draggable" id="'.$psetRow["pid"].'"><a href="question.php?pid='.$psetRow['pid'].'&qnum=1" data-role="button">'.$psetRow["class"]." ".$psetRow["pset"]."</a></div>";
 } 
-echo '<a href="http://www.facebook.com/'.$fid.'">hello</a>';
 echo "<PRE>";
 
 ?>
