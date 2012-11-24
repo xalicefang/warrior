@@ -169,7 +169,7 @@ function getStartedHelp() {
 		$('input:checked').each(function() {
 		allPids.push($(this).attr('id'));
 		});
-		$.post('deletePset.php',
+		$.post('deletePset2.php',
 		{allPids:allPids, fid:fid}, 
 		function(data){
 		window.location.reload();

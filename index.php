@@ -139,6 +139,7 @@ float: center;
 			}
 			// if no active psets
 			if ($counter==0) {
+				echo "Congratulations! You've defeated ALL your psets!";
 			} 
 		} // end if isset
 		?>
@@ -199,7 +200,7 @@ function getStartedHelp() {
     <script>
       function deletePset(pid){
             $.post("deletePset.php",
-            {pid: pid, uid: <?php echo $_COOKIE['user_id'] ?>
+            {pid: pid, fid: <?php echo $_COOKIE['user_id'] ?>
             }, function(data)
             {
                 alert(data);
