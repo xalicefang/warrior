@@ -70,15 +70,6 @@ while ($psetsRow = mysql_fetch_assoc($psetsTable)) {
                 width:50px;
                 height: 50px;
             }
-            
-            button {
-                height:50px;
-                width:50px;
-                font-size: 15px;
-                background-color: rgba(255, 255, 255, 0);
-                border-radius: 50px;
-                box-shadow: 3px 3px 3px rgba(0, 0, 0, .3);
-            }
         </style>
 </head>  
 <body> 
@@ -89,51 +80,46 @@ while ($psetsRow = mysql_fetch_assoc($psetsTable)) {
             <img src="images/header.png" style="width:100%">
 	</div>
 	<div data-role="content">
+                <p style="display:none" id="user-message"></p>
                 <h2><?php echo $psetName?></h2>
                 <h3>Question <?php echo $qNum ?>: <?php echo $question ?></h3>
                 <input style="display: none" type="text" name="question" id="question-input">
                 <a style="display:none" href="" onclick="saveQuestion();" id="save">Save</a>
-                <div id="switch-view">
-                    <button type="button" class="check" onclick="alert(1)">Check</button>
-                    <button type="button" class="find" onclick="alert(2)">Find People</button>
-                </div>
-
+                <label for="answer">Answer:</label>
+                <input type="text" name="answer" id="answer">
+                <input type="button" onclick="checkAnswer();" value="Check">
+                <a data-role="button" data-theme="a" onclick="javascript: <?php if($qNum > 1){?> window.location.href='question.php?pid=<?php echo $pid?>&qnum=<?php echo ($qNum - 1)?>'; <?php } ?>" id="prev" >Previous</a>
+                <a data-role="button" data-theme="a" onclick="javascript: window.location.href='question.php?pid=<?php echo $pid?>&qnum=<?php echo ($qNum + 1)?>';" id="next" >Next</a>
+                <p id="results" style="display:none"><span id="percentage"></span> people who submitted an answer got the same answer as you.</p>
+                <input type="button" id="find-people" onclick="javascript:findPeople()" value="Find a Study Partner">
                 <div style="display:none" id="people-table">
-                    <label for="answer">Answer:</label>
-                    <input type="text" name="answer" id="answer">
-                    <input type="button" onclick="checkAnswer();" value="Check">
-                    <a data-role="button" data-theme="a" onclick="javascript: <?php if($qNum > 1){?> window.location.href='question.php?pid=<?php echo $pid?>&qnum=<?php echo ($qNum - 1)?>'; <?php } ?>" id="prev" >Previous</a>
-                    <a data-role="button" data-theme="a" onclick="javascript: window.location.href='question.php?pid=<?php echo $pid?>&qnum=<?php echo ($qNum + 1)?>';" id="next" >Next</a>
-                    <p id="results" style="display:none"><span id="percentage"></span> people who submitted an answer got the same answer as you.</p>
-                    <input type="button" id="find-people" onclick="javascript:findPeople()" value="Find a Study Partner">
-                    <?php
-                    // for current user, pull psets associated with user into array. for each pid in array, pull rows from psets
-                    $sql = "SELECT * FROM userpsets WHERE pid=$pid";
-                    $peopleTable = mysql_query($sql);
-                    while ($peopleRow = mysql_fetch_array($peopleTable)){ 
-                        if($peopleRow['fid'] != $_COOKIE['user_id']) {
-                        ?> 
-                        <div id="people-info">
-                            <img id="prof-pic" src="https://graph.facebook.com/<?php echo $peopleRow['fid']?>/picture"></img>
-                            <?php 
-                                    $uid = $peopleRow['uid'];
-                                    $sql2 = "SELECT * FROM allusers WHERE uid=$uid";
-                                    $personInfo = mysql_query($sql2);
-                                    $personRow = mysql_fetch_assoc($personInfo);
-                                    $name = $personRow['name'];
-                            ?>
-                            <a href="http://www.facebook.com/<?php echo $peopleRow['fid']?>"><?php echo $name ?></a>
-                        </div>
-                    <?php 
-                        }
-                    } 
-                    ?>
+                <?php
+                // for current user, pull psets associated with user into array. for each pid in array, pull rows from psets
+                $sql = "SELECT * FROM userpsets WHERE pid=$pid";
+                $peopleTable = mysql_query($sql);
+                while ($peopleRow = mysql_fetch_array($peopleTable)){ 
+                    if($peopleRow['fid'] != $_COOKIE['user_id']) {
+                    ?> 
+                    <div id="people-info">
+                        <img id="prof-pic" src="https://graph.facebook.com/<?php echo $peopleRow['fid']?>/picture"></img>
+                        <?php 
+                                $uid = $peopleRow['uid'];
+                                $sql2 = "SELECT * FROM allusers WHERE uid=$uid";
+                                $personInfo = mysql_query($sql2);
+                                $personRow = mysql_fetch_assoc($personInfo);
+                                $name = $personRow['name'];
+                        ?>
+                        <a href="http://www.facebook.com/<?php echo $peopleRow['fid']?>"><?php echo $name ?></a>
+                    </div>
+                <?php 
+                    }
+                } 
+                ?>
                 </div>
-         </div>
-         <input type="hidden" id="this-qid" value="<?php echo $qid ?>" />
-         <input type="hidden" id="this-qnum" value="<?php echo $qNum ?>" />
-</div>
-<div data-role="footer" data-theme="a" data-id="samebar" class="nav-pset" data-position="fixed" data-tap-toggle="false">
+                <input type="hidden" id="this-qid" value="<?php echo $qid ?>" />
+                <input type="hidden" id="this-qnum" value="<?php echo $qNum ?>" />
+	</div>
+    	<div data-role="footer" data-theme="a" data-id="samebar" class="nav-pset" data-position="fixed" data-tap-toggle="false">
         <div data-role="navbar" class="nav-pset" data-grid="c">
                 <ul>
 			<li><a data-ajax ="false" href="home.php" id="homepage" data-icon="custom">Home</a></li>
@@ -141,14 +127,18 @@ while ($psetsRow = mysql_fetch_assoc($psetsTable)) {
                         <li><a data-ajax ="false" href="defeated.php"  id="defeated" data-icon="custom">Defeated psets</a></li>
                         <li><a data-ajax ="false" href="class.php" id="classes" data-icon="custom">Classes</a></li>
                 </ul>
-	</div><!-- /navbar -->
-</div><!-- /footer -->
+
+		</div><!-- /navbar -->
+	</div><!-- /footer -->
+</div>
 <script>
     $(document).ready(function(){
         <?php if($numRows == 0){?>
-            $('#question-input').val('This question doesn\'t exist yet, but you can be the first to create it!').show();
+            $('#user-message').html('This question doesn\'t exist yet, but you can be the first to create it!').show();
+            $('#question-input').show();
             $('#save').show();
         <?php } else {?>
+            $('#user-message').html('').hide();
             $('#question-input').hide();
             $('#save').hide();
         <?php }?>
