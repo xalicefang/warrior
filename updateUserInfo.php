@@ -16,7 +16,7 @@ $sql = "SELECT * FROM allusers WHERE fid =$user_id";
 $result = mysql_query($sql);
 $numRows = mysql_num_rows($result);
 if($numRows == 0){
-    $insertNew="INSERT INTO `c_cs147_fangx`.`allusers`(`uid`,`fid`, `name`) VALUES ('', '$user_id', '$user_name')";
+    $insertNew="INSERT INTO `allusers`(`uid`,`fid`, `name`) VALUES ('', '$user_id', '$user_name')";
     mysql_query($insertNew);
     echo mysql_error();
 }

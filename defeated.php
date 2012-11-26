@@ -36,7 +36,7 @@
 				$name = $_POST["name"];
 				$password = $_POST["password"];
 				$email = $_POST["email"];
-				$insertNew="INSERT INTO `c_cs147_fangx`.`all users`(`uid`,`name`, `password`, `email`) VALUES (NULL,'$name', '$password', '$email')";
+				$insertNew="INSERT INTO `all users`(`uid`,`name`, `password`, `email`) VALUES (NULL,'$name', '$password', '$email')";
 				mysql_query($insertNew);
 				$uid = mysql_insert_id();
 				setcookie('uid', '$uid');

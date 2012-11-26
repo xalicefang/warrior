@@ -1,8 +1,8 @@
 <?php
 	// if not logged in, redirect to login
-if(!isset($_COOKIE['user_id'])) {	  	
-   header( 'Location: http://stanford.edu/~fangx/cgi-bin/pset/login' ) ;
-}
+	if(!isset($_COOKIE['user_id'])) {
+		header( 'Location: login' ) ;
+	}
 ?>
 
 <!DOCTYPE html> 
