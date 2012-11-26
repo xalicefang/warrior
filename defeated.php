@@ -59,7 +59,7 @@
                                             $pset = $row['pset'];
                                         }
                                         
-					echo '<label><input type="checkbox" name="defeated" id="'.$pid.'"/>'.$class.$pset.' '.$psetsRow["pset"].'</label>'; 
+					echo '<label><input type="checkbox" name="defeated" id="'.$pid.'"/>'.$class.' '.$pset.'</label>'; 
 				} 
 			echo '</fieldset>';
 			echo '</div>';
