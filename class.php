@@ -54,7 +54,7 @@
 				$classes[] = $classesRow["class"];
 				for ($i=0; $i<count($userClasses); $i++) {
 					if ($userClasses[$i]==$classesRow["cid"]) {
-						echo '<a href="deleteClass.php?cid='.$classesRow["cid"].'" data-role="button" data-icon="delete" data-iconpos="right">'.$classesRow["class"].'</a>';
+						echo '<a href="" class="class" onClick="deleteClass()" id="'.$classesRow["cid"].'" name="'.$classesRow["class"].'" data-role="button" data-icon="delete" data-iconpos="right">'.$classesRow["class"].'</a>';
 						unset($classes[count($classes)-1]);
 						$classes= array_values($classes);
 						break;
@@ -92,6 +92,22 @@
        </div><!-- /page -->
 	
 	<script>
+
+	function deleteClass(){
+		var fid = <?php echo $_COOKIE['user_id']?>;
+		var cid = $('.class').attr('id');
+		var className = $('.class').attr('name');
+		if(cid != '') {
+			var r = confirm("Delete " + className + "?");
+			if (r==true) {
+				$.post('deleteClass.php', 
+				{fid: fid, cid: cid}, 
+				function(data){window.location.reload();
+				});
+			}
+            }
+            else confirm('Please choose a valid class and pset name!');                 
+        }
 
 		$("#addremoveclass").bind("pageshow", function(e) {
 
