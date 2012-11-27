@@ -2,6 +2,7 @@
 <html>
 
 <head>
+	<script src="//cdn.optimizely.com/js/139725978.js"></script>
 	<title>Pset Warrior | Undefeated Psets</title> 
 	<meta charset="utf-8">
 	<meta name="apple-mobile-web-app-capable" content="yes">

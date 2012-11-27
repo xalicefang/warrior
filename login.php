@@ -7,6 +7,7 @@
 
 <html>
 <head>
+    <script src="//cdn.optimizely.com/js/139725978.js"></script>
     <title>PSet Warriors</title>
     <meta name="viewport" content="initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
     <meta charset="utf-8">
