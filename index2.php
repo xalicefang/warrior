@@ -104,6 +104,7 @@
 			}
 			// if no active psets
 			if ($counter==0) {
+				echo "<p>You currently have no psets! Add a new pset or just relax :)</p>";
 			} 
 		} // end if isset
 		?>

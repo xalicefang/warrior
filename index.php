@@ -139,7 +139,7 @@ float: center;
 			}
 			// if no active psets
 			if ($counter==0) {
-				echo "Congratulations! You've defeated ALL your psets!";
+				echo "<p>You currently have no psets! Add a new pset or just relax :)</p>";
 			} 
 		} // end if isset
 		?>

@@ -79,10 +79,10 @@
 	<div data-role="footer" data-theme="a" data-id="samebar" class="nav-pset" data-position="fixed" data-tap-toggle="false">
         <div data-role="navbar" class="nav-pset" data-grid="c">
                 <ul>
-			   <li><a href="index.php" id="homepage" data-icon="custom">Home</a></li>
-                        <li><a href="addpset.php" id="addpset" data-icon="custom">Add pset</a></li>
-                        <li><a href="defeated.php" id="defeated" data-icon="custom">Defeated psets</a></li>
-                        <li><a href="class.php" class="ui-btn-active ui-state-persist" id="classes" data-icon="custom">Classes</a></li>
+			<li><a data-ajax ="false" href="index.php" id="homepage" data-icon="custom">Home</a></li>
+                        <li><a data-ajax ="false" href="addpset.php?reload=yes" id="addpset" data-icon="custom">Add pset</a></li>
+                        <li><a data-ajax ="false" href="defeated.php"  id="defeated" data-icon="custom">Defeated psets</a></li>
+                        <li><a data-ajax ="false" href="class.php" id="classes" class="ui-btn-active ui-state-persist" data-icon="custom">Classes</a></li>
                 </ul>
 
 		</div><!-- /navbar -->
