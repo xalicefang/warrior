@@ -28,7 +28,7 @@
 
 	<div data-role="content">
 	<fieldset data-role="controlgroup">
-	<a href="index.html" data-role="button" class="ui-nolink" data-theme="e">Add/ remove classes</a>
+	<a href="index.html" data-role="button" class="ui-nolink" data-theme="e">Classes</a>
 			
 			<p>
 				<input type="text" id="searchField" placeholder="Search for classes">
@@ -69,8 +69,8 @@
 	<p></p>
 
 	<fieldset class="ui-grid-e">
-	<div class="ui-block-a"><button type="submit" data-theme="c" onclick="window.history.back()">Back</button></div>
-	<div class="ui-block-b"><button type="submit" data-theme="b" onclick="window.location.href='home.php'">Save</button></div>
+	<div class="ui-block-a"><a href="index" data-role="button" data-theme="c">Back</a></div>
+	<div class="ui-block-b"><a href="index" data-role="button" data-theme="c">Save</a></div>
 	</fieldset>
 	   
 	
