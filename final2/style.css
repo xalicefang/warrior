@@ -1,0 +1,63 @@
+		.nav-pset .ui-btn .ui-btn-inner { 
+		padding-top: 60px !important; 
+		font-family: 'Patrick Hand', cursive;
+		}
+		.nav-pset .ui-btn .ui-icon { width: 50px!important; height: 50px!important; margin-left: -25px !important; box-shadow: none!important; -moz-box-shadow: none!important; -webkit-box-shadow: none!important; -webkit-border-radius: 0 !important; border-radius: 0 !important; }
+
+		#addpset .ui-icon { background:  url(images/addpset.png) 50% 50% no-repeat;  background-size: 40px 54px; }
+		#defeated .ui-icon { background:  url(images/icon2a.png) 50% 50% no-repeat;  background-size: 55px 55px; }
+		#classes .ui-icon { background:  url(images/icon3.png) 50% 50% no-repeat;  background-size: 55px 55px; }
+		#homepage .ui-icon { background:  url(images/icon4.png) 50% 50% no-repeat;  background-size: 60px 43px; }
+		
+/* font for no link buttons*/
+.ui-nolink {
+font-family: 'Patrick Hand', cursive;
+font-size: 30px;
+
+}
+
+.ui-nolink,
+.ui-nolink a {
+	cursor: default !important;
+	pointer-events: none;
+}
+
+/*content background*/
+.ui-mobile [data-role=content], .ui-mobile [data-role=dialog], .ui-page {
+background:url(images/retina_wood.png);
+background-repeat:repeat;
+}
+
+
+/* extend background image to top of page - no black line */
+.ui-header-fixed,
+.ui-footer-fixed {
+	left: 0;
+	right: 0;
+	width: 100%;
+	position: fixed;
+	z-index: 0;
+}
+
+.ui-bar-a {
+	border: 0px;
+	background:transparent;
+}
+
+/*take out top content padding*/
+.ui-content { border-width: 0; overflow: visible; overflow-x: hidden; padding: 0 15px 15px 15px; }
+
+/*if no link, increase font size*/
+.ui-nolink .ui-btn-inner { font-size: 20px; }
+
+/*new grid*/
+/* grid e 35/65*/
+.ui-grid-e .ui-block-a { width: 35%; }
+.ui-grid-e .ui-block-b { width: 65%; float:right;} 
+
+.ui-grid-f .ui-block-a { width: 15%;}
+.ui-grid-f .ui-block-b { width: 85%; float:right;} 
+
+.ui-grid-c {
+background: #fff /*{a-bhover-background-color}*/;
+}
