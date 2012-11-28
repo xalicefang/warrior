@@ -38,7 +38,7 @@
 				$userClasses[] = $userClassesRow["cid"];
 			}		
 			
-
+			
 			$classesTable = mysql_query("SELECT * FROM classes");
 			$classes = array ();
 
