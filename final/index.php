@@ -1,3 +1,10 @@
+<?php
+	// if not logged in, redirect to login
+	if(!isset($_COOKIE['user_id'])) {
+		header( 'Location: login' ) ;
+	}
+?>
+
 <!DOCTYPE html> 
 <html>
 
@@ -157,9 +164,9 @@ float: center;
 
 <?
 function getStartedHelp() {
-	echo '<a href="" data-role="button">your pset here</a>';
-	echo '<a href="" data-role="button">and here</a>';
-	echo '<a href="" data-role="button">and here! :)</a>';
+	// echo '<a href="" data-role="button">your pset here</a>';
+	// echo '<a href="" data-role="button">and here</a>';
+	// echo '<a href="" data-role="button">and here! :)</a>';
 	?>
 	<script>
 	$(document).unbind('pageshow');

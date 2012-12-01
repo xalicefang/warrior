@@ -122,9 +122,9 @@
 
 <?
 function getStartedHelp() {
-	echo '<a href="" data-role="button">your pset here</a>';
-	echo '<a href="" data-role="button">and here</a>';
-	echo '<a href="" data-role="button">and here! :)</a>';
+	// echo '<a href="" data-role="button">your pset here</a>';
+	// echo '<a href="" data-role="button">and here</a>';
+	// echo '<a href="" data-role="button">and here! :)</a>';
 	?>
 	<script>
 	$(document).unbind('pageshow');

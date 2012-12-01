@@ -15,7 +15,6 @@
 	
 	<script src="jquery-1.8.2.min.js"></script>
 	<script src="jquery.mobile-1.2.0.js"></script>
-	<script src="jqm.autoComplete-1.4.3-min.js"></script>
 	
 
 </head>  
@@ -29,38 +28,23 @@
 	<div data-role="content">
 			
 			<?php
-include("config.php");
+			include("config.php");
 
-$fid = $_REQUEST['user_id'];
-
-$class=($_GET['class']);
-$classRow = mysql_fetch_assoc(mysql_query("SELECT * FROM classes WHERE class = '".$class."'"));
-$cid = $classRow["cid"];
-
-if ($cid!=""){
-$insertUserPset="INSERT INTO userClasses (`fid`,`cid`) VALUES ($fid,$cid)";
-mysql_query($insertUserPset);
-echo '<script>window.location="class"</script>';
-}
-
+			$fid = $_REQUEST['user_id'];
 			$userRow = mysql_fetch_assoc(mysql_query("SELECT * FROM allusers WHERE fid = '".$fid."'"));
 
 			$userClasses = array ();
 			$query = mysql_query("SELECT * FROM userClasses WHERE fid = '".$fid."'");
-			
-			echo '<fieldset data-role="controlgroup">';
-			echo '<a href="" data-role="button" class="ui-nolink" data-theme="e">Classes</a>';
-
 			while ($userClassesRow = mysql_fetch_assoc($query)) {
 				$userClasses[] = $userClassesRow["cid"];
-				$classRow = mysql_fetch_assoc(mysql_query("SELECT * FROM classes WHERE cid = '".$userClassesRow["cid"]."'"));
-				$className = $classRow["class"];
-				echo '<a href="" onClick="deleteClass('.$userClassesRow["cid"].')" id="'.$userClassesRow["cid"].'" name="'.$className.'" data-role="button" data-icon="delete" data-iconpos="right">'.$className.'</a>';
+				echo '<a href="" class="class" onClick="deleteClass()" id="'.$userClassesRow["cid"].'" data-role="button" data-icon="delete" data-iconpos="right">'.$userClassesRow["cid"].'</a>';
 			}
 
 			$classesTable = mysql_query("SELECT * FROM classes");
 			$classes = array ();
 
+			echo '<fieldset data-role="controlgroup">';
+			echo '<a href="" data-role="button" class="ui-nolink" data-theme="e">Classes</a>';
 			while ($classesRow = mysql_fetch_assoc($classesTable)) {
 				$classes[] = $classesRow["class"];
 				for ($i=0; $i<count($userClasses); $i++) {
@@ -78,6 +62,9 @@ echo '<script>window.location="class"</script>';
 			<p>
 				<input type="text" id="searchField" placeholder="Search for classes to add">
 				<ul id="suggestions" data-role="listview" data-inset="true"></ul>
+
+				 <label for="tags">Tags: </label>
+    <input id="tags" />
 			</p>
 	
 	</div><!-- /content -->
@@ -99,11 +86,12 @@ echo '<script>window.location="class"</script>';
 	
 	<script>
 
-	function deleteClass(cid){
+	function deleteClass(){
 		var fid = <?php echo $_COOKIE['user_id']?>;
-		var className = $('#'+cid).attr('name');
+		var cid = $('.class').attr('id');
+		var className = $('.class').attr('name');
 		if(cid != '') {
-			var r = confirm("Delete " + className + "?");
+			var r = confirm("Delete " + cid + className + "?");
 			if (r==true) {
 				$.post('deleteClass.php', 
 				{fid: fid, cid: cid}, 
@@ -114,6 +102,36 @@ echo '<script>window.location="class"</script>';
             else confirm('Please choose a valid class and pset name!');                 
         }
 
+$(function() {
+        var availableTags = [
+            "ActionScript",
+            "AppleScript",
+            "Asp",
+            "BASIC",
+            "C",
+            "C++",
+            "Clojure",
+            "COBOL",
+            "ColdFusion",
+            "Erlang",
+            "Fortran",
+            "Groovy",
+            "Haskell",
+            "Java",
+            "JavaScript",
+            "Lisp",
+            "Perl",
+            "PHP",
+            "Python",
+            "Ruby",
+            "Scala",
+            "Scheme"
+        ];
+        $( "#tags" ).autocomplete({
+            source: availableTags
+        });
+    });
+
 		$("#addremoveclass").bind("pageshow", function(e) {
 
 			var availableTags = <?php echo json_encode($classes); ?>;
@@ -121,7 +139,7 @@ echo '<script>window.location="class"</script>';
 			$("#searchField").autocomplete({
 				target: $('#suggestions'),
 				source: availableTags,
-				link: 'class.php?class=',
+				// link: 'addClass.php?class=',
 				minLength: 1,
 				matchFromStart: false
 			});

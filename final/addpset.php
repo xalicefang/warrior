@@ -74,7 +74,7 @@
         <div data-role="navbar" class="nav-pset" data-grid="c">
                 <ul>
 			<li><a data-ajax ="false" href="index.php" id="homepage" data-icon="custom">Home</a></li>
-                        <li><a data-ajax ="false" href="addpset.php?reload=yes" class="ui-btn-active ui-state-persist" id="addpset" data-icon="custom">Add pset</a></li>
+                        <li><a data-ajax ="false" href="addpset.php" class="ui-btn-active ui-state-persist" id="addpset" data-icon="custom">Add pset</a></li>
                         <li><a data-ajax ="false" href="defeated.php"  id="defeated" data-icon="custom">Defeated psets</a></li>
                         <li><a data-ajax ="false" href="class.php" id="classes" data-icon="custom">Classes</a></li>
                 </ul>
