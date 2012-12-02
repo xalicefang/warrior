@@ -39,10 +39,10 @@ while ($psetsRow = mysql_fetch_assoc($psetsTable)) {
 	<script src="jquery.mobile-1.2.0.js"></script>
 
         <style>
-
-#question{
-		background: #f7f7f7;
+	#question{
+		background: #f3f3f3;
 		border-radius: 10px;
+		padding:5px 10px; 
 	}
 	
 	#editable {		
@@ -52,7 +52,6 @@ while ($psetsRow = mysql_fetch_assoc($psetsTable)) {
 	#status{
 		display:none; 
 		margin-bottom:15px; 
-		padding:5px 10px; 
 		border-radius:5px;
 	}
 	
@@ -67,42 +66,8 @@ while ($psetsRow = mysql_fetch_assoc($psetsTable)) {
 	#footer{
 		margin-top:15px;
 		text-align: center;
-	}
-	
-	#save{	
-		display: none;
-		margin: 5px 10px 10px;		
-		outline: none;
-		cursor: pointer;	
-		text-align: center;
-		text-decoration: none;
-		font: 12px/100% Arial, Helvetica, sans-serif;
-		font-weight:700;	
-		padding: 5px 10px;	
-		-webkit-border-radius: 5px; 
-		-moz-border-radius: 5px;
-		border-radius: 5px;	
-		color: #606060;
-		border: solid 1px #b7b7b7;	
-		background: #fff;
-		background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ededed));
-		background: -moz-linear-gradient(top,  #fff,  #ededed);
-		filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed');
 	}	
-	
-	#save:hover
-	{
-        background: #ededed;
-		background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#dcdcdc));
-		background: -moz-linear-gradient(top,  #fff,  #dcdcdc);
-		filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dcdcdc');
-	}
-
-
-	#questionSpace {
-		background: rgba(255,255,255,.8);
-	}
-            
+	            
 	#people-info {
                 float: left;
                 margin-right: 20px;
@@ -130,7 +95,6 @@ while ($psetsRow = mysql_fetch_assoc($psetsTable)) {
  
 #save{
     display: none;
-    margin: 5px 10px 10px;
 }
             
         </style>
@@ -154,7 +118,7 @@ while ($psetsRow = mysql_fetch_assoc($psetsTable)) {
 					{
 						$("#status")
 						.addClass("success")
-						.html("Data saved successfully")
+						.html("Question saved successfully")
 						.fadeIn('fast')
 						.delay(3000)
 						.fadeOut('slow');	
@@ -163,7 +127,7 @@ while ($psetsRow = mysql_fetch_assoc($psetsTable)) {
 					{
 						$("#status")
 						.addClass("error")
-						.html("An error occured, the data could not be saved")
+						.html("An error occured, the question could not be saved")
 						.fadeIn('fast')
 						.delay(3000)
 						.fadeOut('slow');	
@@ -196,32 +160,30 @@ while ($psetsRow = mysql_fetch_assoc($psetsTable)) {
 	<div data-role="header">
             <img src="images/header.png" style="width:100%">
 	</div>
+<div style="float:left; padding-top:110px; padding-left:5px"><a href="question.php?pid=<?php echo $pid?>&qnum=<?php echo ($qNum - 1)?>"><img src="q_previous.png" id="prev"></a></div>
+<div style="float:right; padding-top:110px; padding-right:5px"><a href="question.php?pid=<?php echo $pid?>&qnum=<?php echo ($qNum + 1)?>"><img src="q_next.png" id="prev"></a></div>
 	<div data-role="content">
+
 		
                 <a href="index.html" data-role="button" class="ui-nolink" data-theme="e"><?php echo $psetName?></a>
 
-		<div id=questionSpace>
-                <table width=100%>
-                    <tr>
-                        <td align="left"><img src="q_previous.png" id="prev" onclick="javascript: <?php if($qNum > 1){?> window.location.href='question.php?pid=<?php echo $pid?>&qnum=<?php echo ($qNum - 1)?>'; <?php } ?>" ></td>
-                        <td align="center">
-                            <h3 style="text-align:center">Question <?php echo $qNum ?>:</h3>
-
-<div id="status"></div>
+		<div id="status"></div>
 		
 		<div id="question">
-		
+		<h3>Question <?php echo $qNum ?>:</h3>
 		<div id="editable" contentEditable="true">
-			<?php echo $question ?>	
+			<?php 
+			if($question==""){
+				echo "click here to enter question";
+			} else {
+				echo $question;
+			}
+			?>
 		</div>	
-		
-		<button id="save">Save</button>
+		<a href="#" id="save">Save</a>
 		</div>
-		</td>
-                        <td align="right"><img src="q_next.png" id="next" onclick="javascript: window.location.href='question.php?pid=<?php echo $pid?>&qnum=<?php echo ($qNum + 1)?>';"></td>
-                    </tr>
-                </table>
-		</div>
+
+              
 		
                 <div id="switch-view">
                     <fieldset class="ui-grid-e">
@@ -287,19 +249,6 @@ while ($psetsRow = mysql_fetch_assoc($psetsTable)) {
 	</div><!-- /footer -->
     </div> 
 <script>
-    $(document).ready(function(){
-        <?php if($numRows == 0){?>
-            $('#question-input').val('Be the first to create this question here').show();
-            $('#question').hide();
-            $('#save').show();
-            $('#switch-view').hide();
-        <?php } else {?>
-            $('#question-input').hide();
-            $('#question').show();
-            $('#save').hide();
-            $('#switch-view').show();
-        <?php }?>
-    });
     
     function checkAnswer(){
         if($('#answer').val().length > 0){
@@ -329,15 +278,7 @@ while ($psetsRow = mysql_fetch_assoc($psetsTable)) {
     }
     
     
-    function saveQuestion(){
-            $.post("updateQuestion.php",
-            {question : $('#question-input').val(), qnum: $('#this-qnum').val(), pid: <?php echo $pid ?>
-            }, function(data)
-            {
-                alert("You have added a new question!");
-                window.location.reload();;
-            });
-    }
+    
 </script>
 </body>
 </html>
