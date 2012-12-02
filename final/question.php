@@ -17,7 +17,6 @@ while ($psetsRow = mysql_fetch_assoc($psetsTable)) {
     $psetName = $psetsRow["class"]." ".$psetsRow["pset"];
             
 } 		
-//$validated = $row["validated"];
 ?>
 <!DOCTYPE html> 
 <html>
@@ -40,29 +39,79 @@ while ($psetsRow = mysql_fetch_assoc($psetsTable)) {
 	<script src="jquery.mobile-1.2.0.js"></script>
 
         <style>
-            #navigation-bar #navigation-list{
-                top:44px;
-                right:-40px;
-            }
 
-            li {
-                height: 32px;
+#question{
+		background: #f7f7f7;
+		border-radius: 10px;
+	}
+	
+	#editable {		
+		padding: 10px;		
+	}
+	
+	#status{
+		display:none; 
+		margin-bottom:15px; 
+		padding:5px 10px; 
+		border-radius:5px;
+	}
+	
+	.success{
+		background: #B6D96C;
+	}
+	
+	.error{
+		background: #ffc5cf; 
+	}
+	
+	#footer{
+		margin-top:15px;
+		text-align: center;
+	}
+	
+	#save{	
+		display: none;
+		margin: 5px 10px 10px;		
+		outline: none;
+		cursor: pointer;	
+		text-align: center;
+		text-decoration: none;
+		font: 12px/100% Arial, Helvetica, sans-serif;
+		font-weight:700;	
+		padding: 5px 10px;	
+		-webkit-border-radius: 5px; 
+		-moz-border-radius: 5px;
+		border-radius: 5px;	
+		color: #606060;
+		border: solid 1px #b7b7b7;	
+		background: #fff;
+		background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ededed));
+		background: -moz-linear-gradient(top,  #fff,  #ededed);
+		filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed');
+	}	
+	
+	#save:hover
+	{
+        background: #ededed;
+		background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#dcdcdc));
+		background: -moz-linear-gradient(top,  #fff,  #dcdcdc);
+		filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dcdcdc');
+	}
+
+
+	#questionSpace {
+		background: rgba(255,255,255,.8);
+	}
+            
+	#people-info {
+                float: left;
+                margin-right: 20px;
+		  height: 32px;
                 width:200px;
                 position: relative;
                 cursor: pointer;
                 padding: 3px 0;
                 margin: -3px 0 3px 0;
-            }
-            
-            #menu {
-                width: 30px;
-                height: 30px;
-                float:left;
-            }
-            
-            #people-info {
-                float: left;
-                margin-right: 20px;
             }
             
             #prof-pic {
@@ -71,16 +120,72 @@ while ($psetsRow = mysql_fetch_assoc($psetsTable)) {
                 width:50px;
                 height: 50px;
             }
+
+	#status{
+    display:none;
+    margin-bottom:15px;
+    padding:5px 10px;
+    border-radius:5px;
+}
+ 
+#save{
+    display: none;
+    margin: 5px 10px 10px;
+}
             
-/*            #check, #find {	
-                height:50px;
-                width:50px;
-                font-size: 15px;
-                background-color: rgba(255, 255, 255, 0);
- 	        border-radius: 50px;
- 	        box-shadow: 3px 3px 3px rgba(0, 0, 0, .3);
- 	    }*/
         </style>
+
+<script>
+    $(document).ready(function() {
+	
+
+		$("#save").click(function (e) {			
+			var content = $('#editable').html();	
+				
+			$.ajax({
+				url: 'updateQuestion.php',
+				type: 'POST',
+				data: {
+                content: content, qid : <?php echo $qid ?>, qnum: <?php echo $qNum ?>, pid: <?php echo $pid ?>
+				},				
+				success:function (data) {
+							
+					if (data == '1')
+					{
+						$("#status")
+						.addClass("success")
+						.html("Data saved successfully")
+						.fadeIn('fast')
+						.delay(3000)
+						.fadeOut('slow');	
+					}
+					else
+					{
+						$("#status")
+						.addClass("error")
+						.html("An error occured, the data could not be saved")
+						.fadeIn('fast')
+						.delay(3000)
+						.fadeOut('slow');	
+					}
+				}
+			});   
+			
+		});
+		
+		$("#editable").click(function (e) {
+			$("#save").show();
+			e.stopPropagation();
+		});
+	
+		$(document).click(function() {
+			$("#save").hide();  
+		});
+	
+	});
+
+</script>
+
 </head>  
 <body> 
 
@@ -88,25 +193,36 @@ while ($psetsRow = mysql_fetch_assoc($psetsTable)) {
         <input type="hidden" id="this-qid" value="<?php echo $qid ?>" />
         <input type="hidden" id="this-qnum" value="<?php echo $qNum ?>" />
         <input type="hidden" id="this-fid" value="<?php echo $_COOKIE['user_id'] ?>" />
-
 	<div data-role="header">
             <img src="images/header.png" style="width:100%">
 	</div>
 	<div data-role="content">
+		
                 <a href="index.html" data-role="button" class="ui-nolink" data-theme="e"><?php echo $psetName?></a>
-                <table>
+
+		<div id=questionSpace>
+                <table width=100%>
                     <tr>
                         <td align="left"><img src="q_previous.png" id="prev" onclick="javascript: <?php if($qNum > 1){?> window.location.href='question.php?pid=<?php echo $pid?>&qnum=<?php echo ($qNum - 1)?>'; <?php } ?>" ></td>
                         <td align="center">
                             <h3 style="text-align:center">Question <?php echo $qNum ?>:</h3>
-                            <p id="question"><?php echo $question ?></p>
-                        </td>
+
+<div id="status"></div>
+		
+		<div id="question">
+		
+		<div id="editable" contentEditable="true">
+			<?php echo $question ?>	
+		</div>	
+		
+		<button id="save">Save</button>
+		</div>
+		</td>
                         <td align="right"><img src="q_next.png" id="next" onclick="javascript: window.location.href='question.php?pid=<?php echo $pid?>&qnum=<?php echo ($qNum + 1)?>';"></td>
                     </tr>
                 </table>
-                <input style="display: none" type="text" name="question" id="question-input">
-                <br>
-                <div id="save" style="display:none"><a href="#" data-role="button" data-theme="b" id="cancel-answer" onclick="saveQuestion();">Save Question</a></div>
+		</div>
+		
                 <div id="switch-view">
                     <fieldset class="ui-grid-e">
                         <div id="options">
@@ -134,7 +250,7 @@ while ($psetsRow = mysql_fetch_assoc($psetsTable)) {
                                                 while ($peopleRow = mysql_fetch_array($peopleTable)){ 
                                                     if($peopleRow['fid'] != $_COOKIE['user_id']) {
                                                     ?> 
-                                                    <li id="people-info">
+                                                    <div id="people-info">
                                                         <img id="prof-pic" src="https://graph.facebook.com/<?php echo $peopleRow['fid']?>/picture"></img>
                                                         <?php 
                                                                 $uid = $peopleRow['uid'];
@@ -144,7 +260,7 @@ while ($psetsRow = mysql_fetch_assoc($psetsTable)) {
                                                                 $name = $personRow['name'];
                                                         ?>
                                                         <a href="http://www.facebook.com/<?php echo $peopleRow['fid']?>"><?php echo $name ?></a>
-                                                    </li>
+                                                    </div>
                                                 <?php 
                                                     }else{
                                                         $uid = $peopleRow['uid'];
@@ -156,20 +272,20 @@ while ($psetsRow = mysql_fetch_assoc($psetsTable)) {
                                 <div class="ui-block-a"><a href="#" data-role="button" data-theme="c" id="cancel-answer" onclick=" $('#options').show(); $('#people-view').hide();">Back</a></div>
                         </div>
                     </fieldset>
-                </div>
 	</div>
-        <div data-role="footer" data-theme="a" data-id="samebar" class="nav-pset" data-position="fixed" data-tap-toggle="false">
+
+      <div data-role="footer" data-theme="a" data-id="samebar" class="nav-pset" data-position="fixed" data-tap-toggle="false">
         <div data-role="navbar" class="nav-pset" data-grid="c">
                 <ul>
-                        <li><a data-ajax ="false" href="index.php" id="homepage" data-icon="custom">Home</a></li>
-                        <li><a data-ajax ="false" href="addpset.php?reload=yes" id="addpset" data-icon="custom">Add pset</a></li>
-                        <li><a data-ajax ="false" href="defeated.php"  id="defeated" data-icon="custom">Defeated psets</a></li>
+			<li><a data-ajax ="false" href="index.php" id="homepage" data-icon="custom">Home</a></li>
+                        <li><a data-ajax ="false" href="addpset.php" id="addpset" data-icon="custom">Add pset</a></li>
+                        <li><a data-ajax ="false" href="defeated.php" id="defeated" data-icon="custom">Defeated psets</a></li>
                         <li><a data-ajax ="false" href="class.php" id="classes" data-icon="custom">Classes</a></li>
                 </ul>
 
-                </div><!-- /navbar -->
-        </div><!-- /footer -->
-</div>
+		</div><!-- /navbar -->
+	</div><!-- /footer -->
+    </div> 
 <script>
     $(document).ready(function(){
         <?php if($numRows == 0){?>

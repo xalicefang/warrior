@@ -9,7 +9,6 @@
 <html>
 
 <head>
-	<script src="//cdn.optimizely.com/js/139725978.js"></script>
 	<title>Pset Warrior | Undefeated Psets</title> 
 	<meta charset="utf-8">
 	<meta name="apple-mobile-web-app-capable" content="yes">
@@ -32,6 +31,7 @@
 
     <style>	
 
+
 @media screen and (orientation: landscape) {
         html, body {
           width: 100%;
@@ -49,19 +49,25 @@
         .content .portrait { display: block }
       }
 
-	.fixed-above-footer {
+	#fixed-above-footer {
 		font-family:Patrick Hand; 
 		text-align:center; 
 		bottom: 90px;
 		float: center; 
 	}
 
-	#popup-text {
+	.psetStatus {
+		height: 60px;
+		font-family:Patrick Hand; 
+		text-align:center; 
+	}
+
+	.popup-text {
 		font-family:Patrick Hand; 
 		color:#fff;
 
 	}
-	#popup-div{
+	.popup-div{
 		padding: 20% 10% 10% 10%;
 		float:center;
 	}
@@ -75,7 +81,13 @@
 		    border-right: none;
 		    background: rgba(0,0,0,.5);
 		    margin: -1px 0;
-		}
+	}
+	#popupPanelNew {
+		    border: 1px solid #000;
+		    border-right: none;
+		    background: rgba(0,0,0,.9);
+		    margin: -1px 0;
+	}
 	#helper {
 			position:absolute;
 			color:#fff;
@@ -103,16 +115,28 @@
        <script>
 	
 	$(function() {
-		$( ".draggable" ).draggable({ revert: "invalid" });
-		$( "#droppable" ).droppable({
+		$( ".draggable" ).draggable({ revert: "invalid", axis: "y" });
+
+		$( ".dropDelete" ).droppable({
 		activeClass: "ui-state-hover",
 		hoverClass: "ui-state-active",
 		drop: function( event, ui ) {
 		var pid = ui.draggable.attr('id');
                 deletePset(pid);
-		//document.write(pid);
 		document.location.reload(true);
-		
+		$( this )
+			.addClass( "ui-state-highlight" )
+			.find( "p" )
+		}
+		});
+
+		$( ".dropAdd" ).droppable({
+		activeClass: "ui-state-hover",
+		hoverClass: "ui-state-active",
+		drop: function( event, ui ) {
+		var pid = ui.draggable.attr('id');
+		addPset(pid);
+		document.location.reload(true);
 		$( this )
 			.addClass( "ui-state-highlight" )
 			.find( "p" )
@@ -131,7 +155,8 @@
 			// if no classes, show help
 			if (mysql_num_rows($classesInfo)==0) getStartedHelp();
 			else {
-				$counter=0;
+				$psetCounter=0;
+				$newPsetCounter=0;
 				while ($classesRow = mysql_fetch_assoc($classesInfo)) {
 					$cid = $classesRow['cid'];
 					// get pets for classes user is in
@@ -143,20 +168,25 @@
 						$userPsetRow = mysql_fetch_assoc($userPsetTable);
 						$workingOn = $userPsetRow['workingOn'];
 						if($workingOn == 1) {
-							$counter++;
+							$psetCounter++;
 							echo '<div class="draggable" id="'.$psetRow["pid"].'"><a data-ajax="false" href="question.php?pid='.$psetRow['pid'].'&qnum=1" data-role="button">'.$psetRow["class"]." ".$psetRow["pset"]."</a></div>";
+						} else if ($workingOn == 2) {
+							$newPsetCounter++;
 						}
 					}
 				}
 				// if no active psets
-				if ($counter==0) {
+				if ($psetCounter==0) {
 					echo "<p>You currently have no psets! Add a new pset or just relax :)</p>";
+				}
+				if ($newPsetCounter!=0) {
+					newPsetAdded();
 				}
 			} // else 
 		} // end if isset
 		?>
  <p></p>
-        <a href="" data-role="button" data-theme="b" data-position="fixed" data-role="navbar" id="droppable" class="fixed-above-footer">drag finished pset here to defeat</a>
+        <a href="" data-role="button" data-theme="b" data-position="fixed" data-role="navbar" class="dropDelete" id="fixed-above-footer">drag finished pset here to defeat</a>
 
 </div>
 
@@ -173,7 +203,59 @@
 	</div><!-- /footer -->
     </div> 
 
-<? function getStartedHelp() { 
+<? function newPsetAdded() {
+?>
+	<script>
+	$(document).unbind('pageshow');
+	$(document).bind('pageshow', function(event){ 
+		$("#popupPanelNew").popup({history:false});
+		$( "#popupPanelNew" ).on({
+		popupbeforeposition: function() {
+			var h = $( window ).height();
+			var w = $( window ).width();
+			$( "#popupPanelNew" ).css( "height", h );
+			$( "#popupPanelNew" ).css( "width", w );
+			$( ".psetStatus" ).css( "width", w );
+		}
+	});
+	$("#popupPanelNew").popup("open");
+	});
+	$('#fixed-above-footer').hide();
+	</script> 
+	<div data-role="popup" id="popupPanelNew" data-corners="false" data-theme="none" data-shadow="false" data-tolerance="0,0">
+	<div id="1" class="dropAdd psetStatus ui-bar-b"><p>move to home</p></div>
+	<div style="padding: 0% 10% 10% 10%">
+	<p class="popup-text">While you were away, other warriors in your classes have added psets.</p>
+<?
+	$fid=$_COOKIE['user_id'];
+	// get classes for user
+	$classesInfo = mysql_query("SELECT * FROM userClasses WHERE fid='$fid'");
+	while ($classesRow = mysql_fetch_assoc($classesInfo)) {
+		$cid = $classesRow['cid'];
+		// get pets for classes user is in
+		$psetTable = mysql_query("SELECT * FROM psets WHERE cid='$cid'");
+		while ($psetRow = mysql_fetch_assoc($psetTable)) {
+			$pid = $psetRow['pid'];
+			// check if pset is newly added
+			$userPsetTable = mysql_query("SELECT * FROM userpsets WHERE fid='$fid' AND pid='$pid'");
+			$userPsetRow = mysql_fetch_assoc($userPsetTable);
+			$workingOn = $userPsetRow['workingOn'];
+			if($workingOn == 2) {
+				echo '<div class="draggable" id="'.$psetRow["pid"].'"><a data-ajax="false" data-role="button">'.$psetRow["class"]." ".$psetRow["pset"]."</a></div>";
+			} 
+		}
+	}
+
+?>
+	</div>
+
+	<div id="0" data-position="fixed" data-role="navbar" class="dropDelete psetStatus ui-bar-b"><p>defeat immediately</p></div>
+	</div>
+<?
+
+}
+
+function getStartedHelp() { 
 ?>
 	<script>
 	$(document).unbind('pageshow');
@@ -191,9 +273,8 @@
 	});
 
 $('#undefeated').hide();
-$('#droppable').hide();
+$('.dropDelete').hide();
 	</script> 					
-	</div>
 	<div data-role="popup" id="popupPanel" data-corners="false" data-theme="none" data-shadow="false" data-tolerance="0,0">
 	
 <?
@@ -201,8 +282,8 @@ $fid=$_COOKIE['user_id'];
 $user=mysql_fetch_assoc(mysql_query("SELECT * FROM allusers WHERE fid='$fid'"));
 $name=$user['name'];
 ?>	
-	<div id="popup-div">
-	<p id="popup-text">Dear <?echo "$name"?>,
+	<div class="popup-div">
+	<p class="popup-text">Dear <?echo "$name"?>,
 	<br>&nbsp;
 	<br>Welcome to the battlegrounds of Pset Warrior! Defeating a pset is as simple as 1-2-3:
 	<br>&nbsp;
@@ -212,7 +293,7 @@ $name=$user['name'];
 	<br>&nbsp;
 	<br align=right>Best of luck,
 	<br>Pset Warrior support crew
-	<a href="class" data-role="button" data-theme="c">Get started!</a></p> 
+	<a href="class" data-ajax ="false" data-role="button" data-theme="c">Get started!</a></p> 
 	</div>
 	</div>
 <? } ?>
@@ -220,6 +301,15 @@ $name=$user['name'];
     <script>
       function deletePset(pid){
             $.post("deletePset.php",
+            {pid: pid, fid: <?php echo $_COOKIE['user_id'] ?>
+            }, function(data)
+            {
+                alert(data);
+            });
+      }
+
+	function addPset(pid){
+            $.post("updatePsetStatus.php",
             {pid: pid, fid: <?php echo $_COOKIE['user_id'] ?>
             }, function(data)
             {

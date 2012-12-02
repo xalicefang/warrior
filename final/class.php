@@ -37,10 +37,22 @@ $class=($_GET['class']);
 $classRow = mysql_fetch_assoc(mysql_query("SELECT * FROM classes WHERE class = '".$class."'"));
 $cid = $classRow["cid"];
 
+// if URL has class info
 if ($cid!=""){
-$insertUserPset="INSERT INTO userClasses (`fid`,`cid`) VALUES ($fid,$cid)";
-mysql_query($insertUserPset);
-echo '<script>window.location="class"</script>';
+	$insertUserPset="INSERT INTO userClasses (`fid`,`cid`) VALUES ($fid,$cid)";
+	mysql_query($insertUserPset);
+	$biggestPid =0;
+	$query= mysql_query("SELECT * FROM psets WHERE cid = '".$cid."'");
+	while($psetRow=mysql_fetch_assoc($query)){
+		$pid = $psetRow["pid"];
+		if ($pid > $biggestPid) $biggestPid = $pid;
+		if (mysql_num_rows(mysql_query("SELECT * FROM userpsets WHERE pid = '".$pid."' AND fid = '".$fid."'"))==0) {
+			$insertUserPset="INSERT INTO `userpsets`(`uid`,`fid`,`class`, `pid`, `workingOn`) VALUES ('', '$fid', '$cid', '$pid', '0')";
+			mysql_query($insertUserPset);
+		}
+	}
+	mysql_query("UPDATE  `userpsets` SET  `workingOn` ='1' WHERE  `userpsets`.`pid` =$biggestPid AND `userpsets`.`fid` =$fid");
+	echo '<script>window.location="class"</script>';
 }
 
 			$userRow = mysql_fetch_assoc(mysql_query("SELECT * FROM allusers WHERE fid = '".$fid."'"));

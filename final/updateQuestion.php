@@ -1,12 +1,15 @@
 <?php
 include("config.php");
-
-$question = $_REQUEST['question'];
-$qNum = $_REQUEST['qnum'];
-$pid = $_REQUEST['pid'];
-
-
-$insertQuestion = "INSERT INTO `questions`(`qid`,`questionNumber`, `pid`, `question`, `validated`) VALUES ('', '$qNum', '$pid', '$question', '0')";
-mysql_query($insertQuestion);
-echo $question;
+	$qid = $_POST['qid'];
+	$qnum = $_POST['qnum'];
+	$pid = $_POST['pid'];
+	$content = $_POST['content']; //get posted data
+	$content = mysql_real_escape_string($content);	//escape string	
+	
+	$sql = "UPDATE questions SET question = '$content' WHERE qid = $qid AND pid=$pid AND questionNumber=$qnum";
+	
+	if (mysql_query($sql))
+	{
+		echo 1;
+	}
 ?>
