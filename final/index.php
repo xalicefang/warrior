@@ -50,34 +50,43 @@
       }
 
 	.fixed-above-footer {
-font-family:Patrick Hand; 
-text-align:center; 
-bottom: 90px;
-float: center; 
-}
+		font-family:Patrick Hand; 
+		text-align:center; 
+		bottom: 90px;
+		float: center; 
+	}
 
-#popupPanel-popup {
+	#popup-text {
+		font-family:Patrick Hand; 
+		color:#fff;
+
+	}
+	#popup-div{
+		padding: 20% 10% 10% 10%;
+		float:center;
+	}
+
+	#popupPanel-popup {
 	    right: 0 !important;
 	    left: auto !important;
-		}
-		#popupPanel {
+	}
+	#popupPanel {
 		    border: 1px solid #000;
 		    border-right: none;
 		    background: rgba(0,0,0,.5);
 		    margin: -1px 0;
 		}
-		#helper {
+	#helper {
 			position:absolute;
 			color:#fff;
 			top:70px;
 			left:20px;
-		}
-		#popupPanel .ui-btn {
+	}
+	#popupPanel .ui-btn {
 		    margin: 2em 15px;
-		}
+	}
 
-    </style>
-
+</style>
 </head> 
 
 
@@ -112,7 +121,7 @@ float: center;
 	});
         </script>
 	<div data-role="controlgroup">
-	<a href="" data-role="button" class="ui-nolink" data-theme="e"><b>Undefeated Psets</b></a>
+	<a href="" data-role="button" class="ui-nolink" id="undefeated" data-theme="e"><b>Undefeated Psets</b></a>
 		<?php
 		$fid=$_COOKIE['user_id'];
 		// if user logged in
@@ -121,27 +130,29 @@ float: center;
 			$classesInfo = mysql_query("SELECT * FROM userClasses WHERE fid='$fid'");
 			// if no classes, show help
 			if (mysql_num_rows($classesInfo)==0) getStartedHelp();
-			$counter=0;
-			while ($classesRow = mysql_fetch_assoc($classesInfo)) {
-				$cid = $classesRow['cid'];
-				// get pets for classes user is in
-				$psetTable = mysql_query("SELECT * FROM psets WHERE cid='$cid'");
-				while ($psetRow = mysql_fetch_assoc($psetTable)) {
-					$pid = $psetRow['pid'];
-					// check if pset is active, if active, button
-					$userPsetTable = mysql_query("SELECT * FROM userpsets WHERE fid='$fid' AND pid='$pid'");
-					$userPsetRow = mysql_fetch_assoc($userPsetTable);
-					$workingOn = $userPsetRow['workingOn'];
-					if($workingOn == 1) {
-						$counter++;
-						echo '<div class="draggable" id="'.$psetRow["pid"].'"><a data-ajax="false" href="question.php?pid='.$psetRow['pid'].'&qnum=1" data-role="button">'.$psetRow["class"]." ".$psetRow["pset"]."</a></div>";
+			else {
+				$counter=0;
+				while ($classesRow = mysql_fetch_assoc($classesInfo)) {
+					$cid = $classesRow['cid'];
+					// get pets for classes user is in
+					$psetTable = mysql_query("SELECT * FROM psets WHERE cid='$cid'");
+					while ($psetRow = mysql_fetch_assoc($psetTable)) {
+						$pid = $psetRow['pid'];
+						// check if pset is active, if active, button
+						$userPsetTable = mysql_query("SELECT * FROM userpsets WHERE fid='$fid' AND pid='$pid'");
+						$userPsetRow = mysql_fetch_assoc($userPsetTable);
+						$workingOn = $userPsetRow['workingOn'];
+						if($workingOn == 1) {
+							$counter++;
+							echo '<div class="draggable" id="'.$psetRow["pid"].'"><a data-ajax="false" href="question.php?pid='.$psetRow['pid'].'&qnum=1" data-role="button">'.$psetRow["class"]." ".$psetRow["pset"]."</a></div>";
+						}
 					}
 				}
-			}
-			// if no active psets
-			if ($counter==0) {
-				echo "<p>You currently have no psets! Add a new pset or just relax :)</p>";
-			} 
+				// if no active psets
+				if ($counter==0) {
+					echo "<p>You currently have no psets! Add a new pset or just relax :)</p>";
+				}
+			} // else 
 		} // end if isset
 		?>
  <p></p>
@@ -162,12 +173,8 @@ float: center;
 	</div><!-- /footer -->
     </div> 
 
-<?
-function getStartedHelp() {
-	// echo '<a href="" data-role="button">your pset here</a>';
-	// echo '<a href="" data-role="button">and here</a>';
-	// echo '<a href="" data-role="button">and here! :)</a>';
-	?>
+<? function getStartedHelp() { 
+?>
 	<script>
 	$(document).unbind('pageshow');
 	$(document).bind('pageshow', function(event){ 
@@ -182,21 +189,33 @@ function getStartedHelp() {
 	});
 	$("#popupPanel").popup("open");
 	});
+
+$('#undefeated').hide();
+$('#droppable').hide();
 	</script> 					
 	</div>
 	<div data-role="popup" id="popupPanel" data-corners="false" data-theme="none" data-shadow="false" data-tolerance="0,0">
 	
-	<img src="images/arrow.png" style="transform: rotate(60deg);-webkit-transform: scaleX(2);position:absolute;top:20px;right:0;" />
-
-	<p>Click here to see more options</p>
-
-	<a href="#" data-rel="back">Close</a>
-
+<?
+$fid=$_COOKIE['user_id'];
+$user=mysql_fetch_assoc(mysql_query("SELECT * FROM allusers WHERE fid='$fid'"));
+$name=$user['name'];
+?>	
+	<div id="popup-div">
+	<p id="popup-text">Dear <?echo "$name"?>,
+	<br>&nbsp;
+	<br>Welcome to the battlegrounds of Pset Warrior! Defeating a pset is as simple as 1-2-3:
+	<br>&nbsp;
+	<br>1. Add your classes
+	<br>2. Select a pset or add a pset, then check answers & find study partners
+	<br>3. Drag to defeat
+	<br>&nbsp;
+	<br align=right>Best of luck,
+	<br>Pset Warrior support crew
+	<a href="class" data-role="button" data-theme="c">Get started!</a></p> 
 	</div>
-	
-<? 
-} 
-?>
+	</div>
+<? } ?>
 
     <script>
       function deletePset(pid){

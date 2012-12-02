@@ -68,7 +68,7 @@
 	<p></p>
 	<fieldset class="ui-grid-e">
 	<!--<div class="ui-block-a"><a data-ajax="false" data-role="button" data-theme="c" data-ajax="true" href="" onclick="countChecked()">Test</a></div>-->
-	<div class="ui-block-b"><a data-ajax="false" data-role="button" data-theme="c" data-ajax="true" href="" onclick="revivePset()">Revive</a></div>	   
+	<div class="ui-block-b"><a data-role="button" data-theme="c" href="" onclick="revivePset()">Revive</a></div>	   
 	</fieldset>
 	</div><!-- /content -->
 	
@@ -76,7 +76,7 @@
         <div data-role="navbar" class="nav-pset" data-grid="c">
                 <ul>
 			<li><a data-ajax ="false" href="index.php" id="homepage" data-icon="custom">Home</a></li>
-                        <li><a data-ajax ="false" href="addpset.php?reload=yes" id="addpset" data-icon="custom">Add pset</a></li>
+                        <li><a data-ajax ="false" href="addpset.php" id="addpset" data-icon="custom">Add pset</a></li>
                         <li><a data-ajax ="false" href="defeated.php" class="ui-btn-active ui-state-persist" id="defeated" data-icon="custom">Defeated psets</a></li>
                         <li><a data-ajax ="false" href="class.php" id="classes" data-icon="custom">Classes</a></li>
                 </ul>

@@ -43,17 +43,28 @@
 			$classes = array ();
 
 			echo '<fieldset data-role="controlgroup">';
+			$counter=0;
 			while ($classesRow = mysql_fetch_assoc($classesTable)) {
 				$class = $classesRow['class'];
 				$cid = $classesRow['cid'];
 				$classes[] = $class;
 				for ($i=0; $i<count($userClasses); $i++) {
 					if ($userClasses[$i]==$cid) {
+						$counter++;
 						echo '<input type="radio" name="class" id="'.$cid.'"/>';
 						echo '<label for="'.$cid.'">'.$class.'</label>';
 						break;
 					}
 				}
+			}
+			if ($counter==0) {
+				$counter++;
+				?><script>
+				$(function() {
+					alert("You must add a class before adding a pset. Go to add class.");
+					window.location.href="class";
+				});
+				</script><?
 			}
 			echo '</fieldset>';
                      ?>

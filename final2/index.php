@@ -63,7 +63,6 @@
 	<div data-role="header" >
 		<img src="images/header.png" width="100%">
 	</div><!-- /header -->
-
       <div class='content' data-role='content'> 
 
 	<div data-role="controlgroup">
@@ -121,10 +120,9 @@
     </div> 
 
 <?
+
 function getStartedHelp() {
-	// echo '<a href="" data-role="button">your pset here</a>';
-	// echo '<a href="" data-role="button">and here</a>';
-	// echo '<a href="" data-role="button">and here! :)</a>';
+
 	?>
 	<script>
 	$(document).unbind('pageshow');
@@ -140,7 +138,8 @@ function getStartedHelp() {
 	});
 	$("#popupPanel").popup("open");
 	});
-	</script> 					
+	</script> 	
+			
 	</div>
 	<div data-role="popup" id="popupPanel" data-corners="false" data-theme="none" data-shadow="false" data-tolerance="0,0">
 	
