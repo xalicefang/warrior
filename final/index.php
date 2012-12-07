@@ -117,6 +117,19 @@
 	$(function() {
 		$( ".draggable" ).draggable({ revert: "invalid", axis: "y" });
 
+		$( ".dropAdd" ).droppable({
+		activeClass: "ui-state-hover",
+		hoverClass: "ui-state-active",
+		drop: function( event1, ui1 ) {
+		var pid = ui1.draggable.attr('id');
+		addPset(pid);
+		document.location.reload(true);
+		$( this )
+			.addClass( "ui-state-highlight" )
+			.find( "p" )
+		}
+		});
+
 		$( ".dropDelete" ).droppable({
 		activeClass: "ui-state-hover",
 		hoverClass: "ui-state-active",
@@ -129,23 +142,10 @@
 			.find( "p" )
 		}
 		});
-
-		$( ".dropAdd" ).droppable({
-		activeClass: "ui-state-hover",
-		hoverClass: "ui-state-active",
-		drop: function( event, ui ) {
-		var pid = ui.draggable.attr('id');
-		addPset(pid);
-		document.location.reload(true);
-		$( this )
-			.addClass( "ui-state-highlight" )
-			.find( "p" )
-		}
-		});
 	});
         </script>
 	<div data-role="controlgroup">
-	<a href="" data-role="button" class="ui-nolink" id="undefeated" data-theme="e"><b>Undefeated Psets</b></a>
+	<a data-role="button" class="ui-nolink" id="undefeated" data-theme="e"><b>Undefeated Psets</b></a>
 		<?php
 		$fid=$_COOKIE['user_id'];
 		// if user logged in
@@ -223,7 +223,7 @@
 	$('#fixed-above-footer').hide();
 	</script> 
 	<div data-role="popup" id="popupPanelNew" data-corners="false" data-theme="none" data-shadow="false" data-tolerance="0,0">
-	<div id="1" class="dropAdd psetStatus ui-bar-b"><p>move to home</p></div>
+	<div class="dropAdd psetStatus ui-bar-b"><p>move to home</p></div>
 	<div style="padding: 0% 10% 10% 10%">
 	<p class="popup-text">While you were away, other warriors in your classes have added psets.</p>
 <?

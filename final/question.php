@@ -8,6 +8,11 @@ $result = mysql_query($sql);
 echo mysql_error();
 
 $numRows = mysql_num_rows($result);
+if ($numRows==0) {
+	$insertAnswer = "INSERT INTO `questions` (`qid` ,`questionNumber` ,`pid` ,`question` ,`validated`) VALUES (NULL ,  $qNum,  $pid,  '',  '')";
+	mysql_query($insertAnswer);
+}
+
 $row = mysql_fetch_assoc($result);
 $question = $row["question"];
 $qid = $row["qid"];
@@ -18,6 +23,7 @@ while ($psetsRow = mysql_fetch_assoc($psetsTable)) {
             
 } 		
 ?>
+
 <!DOCTYPE html> 
 <html>
 
@@ -160,8 +166,8 @@ while ($psetsRow = mysql_fetch_assoc($psetsTable)) {
 	<div data-role="header">
             <img src="images/header.png" style="width:100%">
 	</div>
-<div style="float:left; padding-top:110px; padding-left:5px"><a href="question.php?pid=<?php echo $pid?>&qnum=<?php echo ($qNum - 1)?>"><img src="q_previous.png" id="prev"></a></div>
-<div style="float:right; padding-top:110px; padding-right:5px"><a href="question.php?pid=<?php echo $pid?>&qnum=<?php echo ($qNum + 1)?>"><img src="q_next.png" id="prev"></a></div>
+<div style="float:left; padding-top:110px; padding-left:5px"><a data-ajax="false" href="question.php?pid=<?php echo $pid?>&qnum=<?php echo ($qNum - 1)?>"><img src="q_previous.png" id="prev"></a></div>
+<div style="float:right; padding-top:110px; padding-right:5px"><a data-ajax="false" href="question.php?pid=<?php echo $pid?>&qnum=<?php echo ($qNum + 1)?>"><img src="q_next.png" id="prev"></a></div>
 	<div data-role="content">
 
 		
@@ -192,7 +198,6 @@ while ($psetsRow = mysql_fetch_assoc($psetsTable)) {
                             <div><a href="#" data-role="button" data-theme="c" id="find" onclick=" $('#people-view').show(); $('#options').hide();">Find People</a></div>
                         </div>
                         <div id="answer-view" style="display:none">
-                            <a data-role="button" class="ui-nolink" data-theme="a">Answer</a>
                             <input type="text" name="answer" id="answer">
                             <div class="ui-block-b"><a href="#" data-role="button" data-theme="c" id="check-answer" onclick="javascript: checkAnswer();">Check</a></div>
                             <div class="ui-block-a"><a href="#" data-role="button" data-theme="c" id="cancel-answer" onclick=" $('#options').show(); $('#answer-view').hide();">Back</a></div>
